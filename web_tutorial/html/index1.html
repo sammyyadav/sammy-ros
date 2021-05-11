@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+
+<script type="text/javascript" src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+<script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+
+
+
+
+</head>
+
+<body>
+  <h1>Publishing /cmdvel</h1>
+  <p style="font-size: 2vw">linear : <br>
+      x : 0.1,<br>
+      y : 0.2,<br>
+      z : 0.3<br>
+<br>
+    angular : <br>
+      x : -0.1,<br>
+      y : -0.2,<br>
+      z : -0.3<br></p>
+  <button type="button" id="myBtn" onclick="myFunction()" style="size: 300%">Publish</button>
+
+
+
+<script>
+function myFunction() {
+  var ros = new ROSLIB.Ros({
+    url : 'ws://localhost:9090'
+  });
+//Publishing a Topic
+  // ------------------
+
+  var cmdVel = new ROSLIB.Topic({
+    ros : ros,
+    name : '/cmd_vel',
+    messageType : 'geometry_msgs/Twist'
+  });
+
+  var twist = new ROSLIB.Message({
+    linear : {
+      x : 0.1,
+      y : 0.2,
+      z : 0.3
+    },
+    angular : {
+      x : -0.1,
+      y : -0.2,
+      z : -0.3
+    }
+  });
+  cmdVel.publish(twist);
+}
+</script>
+
+<p id="demo" style="font-size: 3vw"></p>
+<script type="text/javascript" type="text/javascript">
+var ros = new ROSLIB.Ros({
+    url : 'ws://localhost:9090'
+  });
+var listener = new ROSLIB.Topic({
+    ros : ros,
+    name : '/listener',
+    messageType : 'std_msgs/String'
+  });
+
+  listener.subscribe(function(message) {
+    console.log('Received message on ' + listener.name + ': ' + message.data);
+   document.getElementById("demo").innerHTML = message.data; 
+  });
+</script>
+
+</body>
+
+
+
+
+</html>

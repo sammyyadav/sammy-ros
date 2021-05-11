@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+  
+<head>
+
+<script type="text/javascript" src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+<script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+
+
+
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> 
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family:'Arial Narrow'  ;
+  padding: 10px;
+  background: #010a16;
+  text-align: center;
+
+}
+
+/* Header/Blog Title */
+.header {
+  padding: 30px;
+  text-align: center;
+  width: 100%;
+ 
+  background-image:url("index.jpeg");
+  background-size: cover;
+  color:cornsilk;
+}
+
+.header h1 {
+  font-size: 50px;
+  
+}
+
+/* Style the top navigation bar */
+.topnav {
+  overflow: hidden;
+  background-color: #031531;
+}
+
+/* Style the topnav links */
+.topnav a {
+  float: left;
+  display: block;
+  color: #ffffff;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+/* Change color on hover */
+.topnav a:hover {
+  background-color:#082b61;
+  color:cornflowerblue;
+}
+
+/* Create two unequal columns that floats next to each other */
+/* Left column */
+.leftcolumn {   
+  float: left;
+  width: 75%;
+}
+
+/* Right column */
+.rightcolumn {
+  float: left;
+  width: 25%;
+  background-color: #031531;
+  padding-left: 20px;
+}
+
+/* Fake image */
+.fakeimg {
+  background-color: #aaa;
+  align-content: center;
+  padding: 0px;
+ 
+}
+
+/* Add a card effect for articles */
+.card {
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  background-color: #031531;
+  color:cornsilk;
+  padding: 20px;
+  margin-top: 0px;
+}
+.card1 {
+  background-image: url("1.jpg");
+  background-size: 200%;
+  background-position: center;
+  background-color: rgb(34, 44, 54);
+  background-blend-mode:soft-light;
+  color:cornsilk;
+  padding: 20px;
+  margin-top: 1px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Footer */
+.footer {
+  padding: 20px;
+  font-style: italic;
+  font-family:cursive;
+  text-align: center;
+  background: rgb(121, 130, 156);
+  margin-top: 20px;
+}
+
+/* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 800px) {
+  .leftcolumn, .rightcolumn {   
+    width: 100%;
+    padding: 0;
+  }
+}
+
+@media screen and (max-aspect-ratio: 0.56) {
+  .leftcolumn, .rightcolumn {   
+    width: 100%;
+    padding: 0;
+  }
+}
+/* Responsive layout - when the screen is less than 400px wide, make the navigation links stack on top of each other instead of next to each other */
+@media screen and (max-width: 800px) {
+  .topnav a {
+    float: none;
+    width: 100%;
+  }
+}
+@media screen and (max-aspect-ratio: 0.56) {
+  .topnav a {
+    float: none;
+    width: 100%;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="header" >
+  <h1>Turtle Fun</h1>
+  <h3>My First web-ros Integration !! :-)</h3>
+</div>
+
+
+
+
+  <div class="row" style=" padding:10%">
+  
+  <div class="card">
+    <h1 style="font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">/cmd_vel Publisher</h1>
+    <table>
+        <tr><td>Linear X</td><td><input id="lx" name ="lx" type="text" value = "1.5"/> </td></tr>
+        <tr><td>Linear Y</td><td><input id="ly" name ="ly" type="text" value = "1.5"/> </td></tr>
+        <tr><td>Angular Z</td><td><input id="az" name ="az" type="text" value = "1.5"/> </td></tr>
+    </table>
+    <button type="button" id="myBtn" onclick="myFunction()" style="size: 3vw">Publish</button>
+
+
+
+    <script>
+    function myFunction() {
+      var ros = new ROSLIB.Ros({
+        url : 'ws://localhost:9090'
+      });
+    //Publishing a Topic
+      // ------------------
+    
+      var cmdVel = new ROSLIB.Topic({
+        ros : ros,
+        name : '/turtle1/cmd_vel',
+        messageType : 'geometry_msgs/Twist'
+      });
+      var linx = 0.0;
+      var liny = 0.0;
+      var angz = 0.0;
+
+      linx = 0+ Number(document.getElementById('lx').value);
+      liny = 0+ Number(document.getElementById('ly').value);
+      angz = 0+ Number(document.getElementById('az').value);
+
+      var twist = new ROSLIB.Message({
+        linear : {
+          x : linx,
+          y : liny,
+          z : 0
+        },
+        angular : {
+          x : 0,
+          y : 0,
+          z : angz
+        }
+      });
+      cmdVel.publish(twist);
+    }
+    </script>
+  </div>
+
+  <div class="card">
+    <h1 style="font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">/pose Subscriber</h1>
+    
+    <p id="x" style="font-size: 3vw"></p>
+    <p id="y" style="font-size: 3vw"></p>
+    <p id="theta" style="font-size: 3vw"></p>
+
+    <script type="text/javascript" type="text/javascript">
+        var ros = new ROSLIB.Ros({
+            url : 'ws://localhost:9090'
+        });
+        var listener = new ROSLIB.Topic({
+            ros : ros,
+            name : '/turtle1/pose',
+            messageType : 'turtlesim/Pose'
+        });
+
+        listener.subscribe(function(message) {
+            console.log('Received message on ' + listener.name + ': ' + message.data);
+        document.getElementById("x").innerHTML = message.x;
+        document.getElementById("y").innerHTML = message.y;
+        document.getElementById("theta").innerHTML = message.theta; 
+        });
+</script>
+
+  </div>
+ 
+
+</div>
+
+
+   
+</body>
+</html>
